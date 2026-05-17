@@ -1,42 +1,606 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KEN Marketing | Homepage</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
+<? const BASE = getScriptURL(); ?>
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
+<base target="_top">
 
-    html, body{
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      font-family:Arial, sans-serif;
-      background:#ffffff;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    iframe{
-      width:100%;
-      height:100vh;
-      border:none;
-    }
-  </style>
+<title>Main Dashboard</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+
+  --bg-body: #f8fafc;
+  --bg-card: #ffffff;
+
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+
+  --sidebar-width: 280px;
+  --topbar-height: 70px;
+
+  --border-color: #e2e8f0;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:'Plus Jakarta Sans', sans-serif;
+  background:var(--bg-body);
+  color:var(--text-main);
+
+  opacity:0;
+  transition:opacity .3s ease;
+}
+
+body.loaded{
+  opacity:1;
+}
+
+body.menu-open{
+  overflow:hidden;
+}
+
+/* TOPBAR */
+
+.topbar{
+  height:var(--topbar-height);
+
+  background:rgba(255,255,255,.9);
+
+  backdrop-filter:blur(10px);
+
+  position:sticky;
+  position:-webkit-sticky;
+
+  top:0;
+
+  z-index:101;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 24px;
+
+  border-bottom:1px solid var(--border-color);
+}
+
+/* LAYOUT */
+
+.layout{
+  display:flex;
+  min-height:calc(100vh - var(--topbar-height));
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  width:var(--sidebar-width);
+
+  background:#fff;
+
+  border-right:1px solid var(--border-color);
+
+  padding:24px 16px;
+
+  position:sticky;
+  top:var(--topbar-height);
+
+  height:calc(100vh - var(--topbar-height));
+
+  overflow-y:auto;
+
+  -webkit-overflow-scrolling:touch;
+
+  z-index:100;
+}
+
+/* CONTENT */
+
+.content{
+  flex:1;
+  width:100%;
+  padding:32px;
+}
+
+/* CARD */
+
+.dash-card{
+  transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change:transform;
+}
+
+.dash-card:hover{
+  transform:translateY(-5px);
+
+  box-shadow:
+    0 20px 25px -5px rgba(79,70,229,.1),
+    0 10px 10px -5px rgba(79,70,229,.04);
+}
+
+/* BUTTONS */
+
+button,
+a{
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ACCORDION */
+
+.menu-content.hidden{
+  display:none;
+}
+
+.rotate-180{
+  transform:rotate(180deg);
+}
+
+/* ACTIVE LINK */
+
+.active-link{
+  color:#4f46e5 !important;
+  border-color:#4f46e5 !important;
+  background:#eef2ff;
+  border-radius:8px;
+}
+
+/* OVERLAY */
+
+.sidebar-overlay{
+  position:fixed;
+  inset:0;
+
+  background:rgba(15,23,42,.45);
+
+  backdrop-filter:blur(3px);
+
+  z-index:1500;
+
+  opacity:0;
+  visibility:hidden;
+
+  transition:all .4s ease;
+}
+
+.sidebar-overlay.show{
+  opacity:1;
+  visibility:visible;
+}
+
+/* MOBILE */
+
+@media(max-width:1024px){
+
+  .layout{
+    display:block;
+  }
+
+  .sidebar{
+
+    position:fixed;
+
+    left:0;
+    bottom:-100%;
+
+    top:auto;
+
+    width:100%;
+    height:75vh;
+
+    border-right:none;
+
+    border-top:1px solid var(--border-color);
+
+    border-radius:32px 32px 0 0;
+
+    padding:40px 20px 60px;
+
+    box-shadow:0 -10px 40px rgba(0,0,0,.15);
+
+    transition:bottom .4s cubic-bezier(0.4,0,0.2,1);
+
+    z-index:2000;
+  }
+
+  .sidebar.show{
+    bottom:0;
+  }
+
+  .sidebar::before{
+    content:"";
+
+    position:absolute;
+
+    top:12px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:45px;
+    height:5px;
+
+    background:#e2e8f0;
+
+    border-radius:10px;
+  }
+
+  .content{
+    padding:20px;
+  }
+}
+
+</style>
+
 </head>
 
 <body>
 
-<iframe
-  src="https://script.google.com/macros/s/AKfycbwxa4cEaMF2GV9dY4kjKxbB8wcJdWhPnQUoPYkysiguNVoc1LHxnrUQT9n_5qNBQ8IskQ/exec"
-  allowfullscreen>
-</iframe>
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+  <div class="flex items-center gap-3">
+
+    <span
+      class="text-2xl cursor-pointer lg:hidden"
+      onclick="toggleSidebar()"
+    >
+      ☰
+    </span>
+
+    <div class="flex items-center gap-3">
+
+      <div class="hidden md:flex w-10 h-10 bg-indigo-600 rounded-xl items-center justify-center shadow-lg shadow-indigo-200">
+
+        <span class="text-white font-bold text-sm">
+          DB
+        </span>
+
+      </div>
+
+      <span class="font-extrabold text-slate-800 text-lg md:text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
+        Main Dashboard
+      </span>
+
+    </div>
+
+  </div>
+
+  <div
+    id="dateDisplay"
+    class="hidden md:block text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-4 py-2 rounded-full border border-indigo-100"
+  ></div>
+
+</div>
+
+<!-- LAYOUT -->
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+
+  <div id="sidebar" class="sidebar space-y-2">
+
+    <!-- FORMS -->
+
+    <div class="menu-item" id="group-forms">
+
+      <button
+        onclick="toggleAccordion('group-forms')"
+        class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all"
+      >
+
+        <div class="flex items-center">
+
+          <span class="mr-3 text-lg text-indigo-600">
+            📝
+          </span>
+
+          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">
+            Forms & Data
+          </span>
+
+        </div>
+
+        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+
+      </button>
+
+      <div class="menu-content hidden pl-10 mt-1 space-y-1">
+
+        <a href="<?= BASE ?>?p=registration" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
+          Registration Forum
+        </a>
+
+        <a href="<?= BASE ?>?p=requirement" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
+          Requirements Forum
+        </a>
+
+        <a href="<?= BASE ?>?p=gifttracker" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
+          Onam Gift Forum
+        </a>
+
+        <a
+          href="https://retaileronboarding.axio.co.in/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700"
+        >
+          XEF Onboarding Forum
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- REPORTS -->
+
+    <div class="menu-item" id="group-reports">
+
+      <button
+        onclick="toggleAccordion('group-reports')"
+        class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all"
+      >
+
+        <div class="flex items-center">
+
+          <span class="mr-3 text-lg text-indigo-600">
+            📈
+          </span>
+
+          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">
+            Reports
+          </span>
+
+        </div>
+
+        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+
+      </button>
+
+      <div class="menu-content hidden pl-10 mt-1 space-y-1">
+
+        <a href="<?= BASE ?>?p=retailerinsights" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
+          Retailer Insights
+        </a>
+
+        <a href="<?= BASE ?>?p=analyticsdashboard" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
+          Distributor Tracker
+        </a>
+
+        <a href="<?= BASE ?>?p=fostracker" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
+          FOS Tracker
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- CONTENT -->
+
+  <main class="content">
+
+    <div class="mb-10">
+
+      <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+        Welcome Back
+      </h2>
+
+      <p class="text-slate-500 font-medium">
+        Quick access to your tracking tools and analytics.
+      </p>
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <a href="<?= BASE ?>?p=analyticsdashboard" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+
+        <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+          📈
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-800 mb-2">
+          Distributor Tracker
+        </h3>
+
+        <p class="text-slate-500 text-sm">
+          View retailer targets and performance.
+        </p>
+
+      </a>
+
+      <a href="<?= BASE ?>?p=retailertracker" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+
+        <div class="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+          🏪
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-800 mb-2">
+          Retailer Tracker
+        </h3>
+
+        <p class="text-slate-500 text-sm">
+          Monitor retailer activations and performance.
+        </p>
+
+      </a>
+
+      <a href="<?= BASE ?>?p=activationtracker" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+
+        <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+          📑
+        </div>
+
+        <h3 class="text-xl font-bold text-slate-800 mb-2">
+          Activation Tracker
+        </h3>
+
+        <p class="text-slate-500 text-sm">
+          Review activation history and uploads.
+        </p>
+
+      </a>
+
+    </div>
+
+  </main>
+
+</div>
+
+<!-- OVERLAY -->
+
+<div
+  id="sidebarOverlay"
+  class="sidebar-overlay"
+  onclick="closeSidebar()"
+></div>
+
+<script>
+
+/* PAGE LOAD */
+
+window.addEventListener("load", () => {
+  document.body.classList.add("loaded");
+});
+
+/* DATE */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const now = new Date();
+
+  document.getElementById(
+    "dateDisplay"
+  ).innerText = now.toLocaleDateString(
+    "en-GB",
+    {
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    }
+  );
+
+});
+
+/* SIDEBAR */
+
+function toggleSidebar(){
+
+  const sidebar =
+    document.getElementById("sidebar");
+
+  const overlay =
+    document.getElementById("sidebarOverlay");
+
+  sidebar.classList.add("show");
+
+  overlay.classList.add("show");
+
+  document.body.classList.add("menu-open");
+}
+
+function closeSidebar(){
+
+  document
+    .getElementById("sidebar")
+    .classList.remove("show");
+
+  document
+    .getElementById("sidebarOverlay")
+    .classList.remove("show");
+
+  document.body.classList.remove(
+    "menu-open"
+  );
+}
+
+/* ACCORDION */
+
+function toggleAccordion(id){
+
+  const target =
+    document.getElementById(id);
+
+  const content =
+    target.querySelector(".menu-content");
+
+  const icon =
+    target.querySelector(".rotate-icon");
+
+  const opened =
+    !content.classList.contains("hidden");
+
+  document
+    .querySelectorAll(".menu-item")
+    .forEach(item => {
+
+      item
+        .querySelector(".menu-content")
+        ?.classList.add("hidden");
+
+      item
+        .querySelector(".rotate-icon")
+        ?.classList.remove("rotate-180");
+    });
+
+  if(!opened){
+
+    content.classList.remove("hidden");
+
+    icon.classList.add("rotate-180");
+  }
+}
+
+/* ACTIVE LINKS */
+
+document.querySelectorAll(".sidebar a")
+.forEach(link => {
+
+  if(link.href === window.location.href){
+    link.classList.add("active-link");
+  }
+
+  link.addEventListener("click", () => {
+
+    if(window.innerWidth <= 1024){
+      closeSidebar();
+    }
+
+  });
+
+});
+
+</script>
 
 </body>
 </html>
