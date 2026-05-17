@@ -2,9 +2,9 @@
 <html>
 <head>
 
-<? const BASE = getScriptURL(); ?>
+<? var BASE = getScriptURL(); ?>
 
-<base target="_top">
+<base target="_self">
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,43 +20,36 @@
 
 <style>
 
-:root {
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #eef2ff;
+:root{
+  --primary:#4f46e5;
+  --primary-hover:#4338ca;
+  --primary-light:#eef2ff;
 
-  --bg-body: #f8fafc;
-  --bg-card: #ffffff;
+  --bg-body:#f8fafc;
+  --bg-card:#ffffff;
 
-  --text-main: #1e293b;
-  --text-muted: #64748b;
+  --text-main:#1e293b;
+  --text-muted:#64748b;
 
-  --sidebar-width: 280px;
-  --topbar-height: 70px;
+  --sidebar-width:280px;
+  --topbar-height:70px;
 
-  --border-color: #e2e8f0;
+  --border-color:#e2e8f0;
 }
 
 *{
+  margin:0;
+  padding:0;
   box-sizing:border-box;
 }
 
 html,
 body{
-  margin:0;
-  padding:0;
   width:100%;
   min-height:100%;
-  font-family:'Plus Jakarta Sans', sans-serif;
+  font-family:'Plus Jakarta Sans',sans-serif;
   background:var(--bg-body);
   color:var(--text-main);
-
-  opacity:0;
-  transition:opacity .3s ease;
-}
-
-body.loaded{
-  opacity:1;
 }
 
 body.menu-open{
@@ -67,17 +60,8 @@ body.menu-open{
 
 .topbar{
   height:var(--topbar-height);
-
   background:rgba(255,255,255,.9);
-
   backdrop-filter:blur(10px);
-
-  position:sticky;
-  position:-webkit-sticky;
-
-  top:0;
-
-  z-index:101;
 
   display:flex;
   align-items:center;
@@ -86,6 +70,11 @@ body.menu-open{
   padding:0 24px;
 
   border-bottom:1px solid var(--border-color);
+
+  position:sticky;
+  top:0;
+
+  z-index:100;
 }
 
 /* LAYOUT */
@@ -113,9 +102,7 @@ body.menu-open{
 
   overflow-y:auto;
 
-  -webkit-overflow-scrolling:touch;
-
-  z-index:100;
+  z-index:99;
 }
 
 /* CONTENT */
@@ -129,8 +116,7 @@ body.menu-open{
 /* CARD */
 
 .dash-card{
-  transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change:transform;
+  transition:all .3s ease;
 }
 
 .dash-card:hover{
@@ -139,13 +125,6 @@ body.menu-open{
   box-shadow:
     0 20px 25px -5px rgba(79,70,229,.1),
     0 10px 10px -5px rgba(79,70,229,.04);
-}
-
-/* BUTTONS */
-
-button,
-a{
-  -webkit-tap-highlight-color:transparent;
 }
 
 /* ACCORDION */
@@ -158,7 +137,7 @@ a{
   transform:rotate(180deg);
 }
 
-/* ACTIVE LINK */
+/* ACTIVE */
 
 .active-link{
   color:#4f46e5 !important;
@@ -173,16 +152,14 @@ a{
   position:fixed;
   inset:0;
 
-  background:rgba(15,23,42,.45);
-
-  backdrop-filter:blur(3px);
-
-  z-index:1500;
+  background:rgba(15,23,42,.4);
 
   opacity:0;
   visibility:hidden;
 
-  transition:all .4s ease;
+  transition:.3s ease;
+
+  z-index:150;
 }
 
 .sidebar-overlay.show{
@@ -199,7 +176,6 @@ a{
   }
 
   .sidebar{
-
     position:fixed;
 
     left:0;
@@ -211,18 +187,15 @@ a{
     height:75vh;
 
     border-right:none;
-
     border-top:1px solid var(--border-color);
 
-    border-radius:32px 32px 0 0;
+    border-radius:30px 30px 0 0;
 
-    padding:40px 20px 60px;
+    transition:.35s ease;
 
-    box-shadow:0 -10px 40px rgba(0,0,0,.15);
+    z-index:200;
 
-    transition:bottom .4s cubic-bezier(0.4,0,0.2,1);
-
-    z-index:2000;
+    box-shadow:0 -10px 30px rgba(0,0,0,.15);
   }
 
   .sidebar.show{
@@ -239,12 +212,12 @@ a{
 
     transform:translateX(-50%);
 
-    width:45px;
+    width:50px;
     height:5px;
 
     background:#e2e8f0;
 
-    border-radius:10px;
+    border-radius:20px;
   }
 
   .content{
@@ -273,15 +246,11 @@ a{
 
     <div class="flex items-center gap-3">
 
-      <div class="hidden md:flex w-10 h-10 bg-indigo-600 rounded-xl items-center justify-center shadow-lg shadow-indigo-200">
-
-        <span class="text-white font-bold text-sm">
-          DB
-        </span>
-
+      <div class="hidden md:flex w-10 h-10 bg-indigo-600 rounded-xl items-center justify-center">
+        <span class="text-white font-bold text-sm">DB</span>
       </div>
 
-      <span class="font-extrabold text-slate-800 text-lg md:text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
+      <span class="font-extrabold text-lg md:text-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-transparent bg-clip-text">
         Main Dashboard
       </span>
 
@@ -310,22 +279,17 @@ a{
 
       <button
         onclick="toggleAccordion('group-forms')"
-        class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all"
+        class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-indigo-50 transition"
       >
 
         <div class="flex items-center">
-
-          <span class="mr-3 text-lg text-indigo-600">
-            📝
-          </span>
-
-          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">
+          <span class="mr-3 text-lg text-indigo-600">📝</span>
+          <span class="font-bold text-sm uppercase tracking-wide">
             Forms & Data
           </span>
-
         </div>
 
-        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 rotate-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
 
@@ -334,24 +298,15 @@ a{
       <div class="menu-content hidden pl-10 mt-1 space-y-1">
 
         <a href="<?= BASE ?>?p=registration" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
-          Registration Forum
+          Registration
         </a>
 
         <a href="<?= BASE ?>?p=requirement" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
-          Requirements Forum
+          Requirement
         </a>
 
         <a href="<?= BASE ?>?p=gifttracker" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
-          Onam Gift Forum
-        </a>
-
-        <a
-          href="https://retaileronboarding.axio.co.in/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700"
-        >
-          XEF Onboarding Forum
+          Gift Tracker
         </a>
 
       </div>
@@ -364,22 +319,17 @@ a{
 
       <button
         onclick="toggleAccordion('group-reports')"
-        class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all"
+        class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-indigo-50 transition"
       >
 
         <div class="flex items-center">
-
-          <span class="mr-3 text-lg text-indigo-600">
-            📈
-          </span>
-
-          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">
+          <span class="mr-3 text-lg text-indigo-600">📈</span>
+          <span class="font-bold text-sm uppercase tracking-wide">
             Reports
           </span>
-
         </div>
 
-        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 rotate-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
 
@@ -387,12 +337,12 @@ a{
 
       <div class="menu-content hidden pl-10 mt-1 space-y-1">
 
-        <a href="<?= BASE ?>?p=retailerinsights" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
-          Retailer Insights
-        </a>
-
         <a href="<?= BASE ?>?p=analyticsdashboard" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
           Distributor Tracker
+        </a>
+
+        <a href="<?= BASE ?>?p=retailertracker" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
+          Retailer Tracker
         </a>
 
         <a href="<?= BASE ?>?p=fostracker" class="block p-2 text-sm border-l-2 border-transparent hover:border-indigo-600 hover:text-indigo-700">
@@ -411,25 +361,25 @@ a{
 
     <div class="mb-10">
 
-      <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+      <h2 class="text-3xl font-extrabold text-slate-900">
         Welcome Back
       </h2>
 
-      <p class="text-slate-500 font-medium">
-        Quick access to your tracking tools and analytics.
+      <p class="text-slate-500 mt-2">
+        Quick access to your dashboard tools.
       </p>
 
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-      <a href="<?= BASE ?>?p=analyticsdashboard" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+      <a href="<?= BASE ?>?p=analyticsdashboard" class="dash-card bg-white p-8 rounded-[30px] border border-slate-200 block">
 
-        <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+        <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-2xl mb-6">
           📈
         </div>
 
-        <h3 class="text-xl font-bold text-slate-800 mb-2">
+        <h3 class="text-xl font-bold mb-2">
           Distributor Tracker
         </h3>
 
@@ -439,29 +389,29 @@ a{
 
       </a>
 
-      <a href="<?= BASE ?>?p=retailertracker" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+      <a href="<?= BASE ?>?p=retailertracker" class="dash-card bg-white p-8 rounded-[30px] border border-slate-200 block">
 
-        <div class="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+        <div class="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center text-2xl mb-6">
           🏪
         </div>
 
-        <h3 class="text-xl font-bold text-slate-800 mb-2">
+        <h3 class="text-xl font-bold mb-2">
           Retailer Tracker
         </h3>
 
         <p class="text-slate-500 text-sm">
-          Monitor retailer activations and performance.
+          Monitor retailer performance and activations.
         </p>
 
       </a>
 
-      <a href="<?= BASE ?>?p=activationtracker" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+      <a href="<?= BASE ?>?p=activationtracker" class="dash-card bg-white p-8 rounded-[30px] border border-slate-200 block">
 
-        <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+        <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl mb-6">
           📑
         </div>
 
-        <h3 class="text-xl font-bold text-slate-800 mb-2">
+        <h3 class="text-xl font-bold mb-2">
           Activation Tracker
         </h3>
 
@@ -487,15 +437,9 @@ a{
 
 <script>
 
-/* PAGE LOAD */
-
-window.addEventListener("load", () => {
-  document.body.classList.add("loaded");
-});
-
 /* DATE */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",()=>{
 
   const now = new Date();
 
@@ -516,17 +460,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function toggleSidebar(){
 
-  const sidebar =
-    document.getElementById("sidebar");
+  document
+    .getElementById("sidebar")
+    .classList.add("show");
 
-  const overlay =
-    document.getElementById("sidebarOverlay");
+  document
+    .getElementById("sidebarOverlay")
+    .classList.add("show");
 
-  sidebar.classList.add("show");
-
-  overlay.classList.add("show");
-
-  document.body.classList.add("menu-open");
+  document.body.classList.add(
+    "menu-open"
+  );
 }
 
 function closeSidebar(){
@@ -562,7 +506,7 @@ function toggleAccordion(id){
 
   document
     .querySelectorAll(".menu-item")
-    .forEach(item => {
+    .forEach(item=>{
 
       item
         .querySelector(".menu-content")
@@ -571,6 +515,7 @@ function toggleAccordion(id){
       item
         .querySelector(".rotate-icon")
         ?.classList.remove("rotate-180");
+
     });
 
   if(!opened){
@@ -584,13 +529,13 @@ function toggleAccordion(id){
 /* ACTIVE LINKS */
 
 document.querySelectorAll(".sidebar a")
-.forEach(link => {
+.forEach(link=>{
 
   if(link.href === window.location.href){
     link.classList.add("active-link");
   }
 
-  link.addEventListener("click", () => {
+  link.addEventListener("click",()=>{
 
     if(window.innerWidth <= 1024){
       closeSidebar();
