@@ -1,80 +1,72 @@
 <div id="sidebar" class="sidebar space-y-2">
 
+  <!-- FORMS -->
   <div class="menu-item" id="group-forms">
-    <button onclick="toggleAccordion('group-forms')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
+
+    <button onclick="toggleAccordion('group-forms')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg">
       <div class="flex items-center">
         <span class="mr-3 text-lg text-indigo-600">📝</span>
-        <span class="font-bold text-sm uppercase tracking-wide text-slate-600">
-          Forms & Data
-        </span>
+        <span class="font-bold text-sm uppercase text-slate-600">Forms & Data</span>
       </div>
-
-      <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24">
+      <svg class="w-4 h-4 rotate-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
       </svg>
     </button>
 
     <div class="menu-content pl-10 space-y-1 mt-1 hidden">
-      <a href="registration.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">Registration Forum</a>
-
-      <a href="requirement.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">Requirements Forum</a>
-
-      <a href="gifttracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">Onam Gift Forum</a>
-
-      <a href="https://retaileronboarding.axio.co.in/" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">
-        XEF Onboarding Forum
-      </a>
-
-      <a href="https://miservicemanager.mi.com/public/#/create-appointment" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">
-        Xiaomi Service Forum
-      </a>
+      <a href="registration.html">Registration Forum</a>
+      <a href="requirement.html">Requirements Forum</a>
+      <a href="gifttracker.html">Onam Gift Forum</a>
     </div>
+
   </div>
 
-  <div class="menu-item" id="group-reports">
-    <button onclick="toggleAccordion('group-reports')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
 
+
+  <!-- LOGS -->
+  <div class="menu-item" id="group-logs">
+
+    <button onclick="toggleAccordion('group-logs')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg">
       <div class="flex items-center">
-        <span class="mr-3 text-lg text-indigo-600">📈</span>
-        <span class="font-bold text-sm uppercase tracking-wide text-slate-600">
-          Reports
-        </span>
+        <span class="mr-3 text-lg text-indigo-600">🕒</span>
+        <span class="font-bold text-sm uppercase text-slate-600">Logs</span>
       </div>
-
-      <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24">
+      <svg class="w-4 h-4 rotate-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
       </svg>
     </button>
 
     <div class="menu-content pl-10 space-y-1 mt-1 hidden">
-
-      <a href="retailerinsights.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">
-        Retailer Insights
-      </a>
-
-      <a href="analyticsdashboard.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">
-        Distributor Tracker
-      </a>
-
-      <a href="retailertracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">
-        Retailer Tracker
-      </a>
-
-      <a href="fostracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">
-        FOS Tracker
-      </a>
-
-      <a href="activationtracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700">
-        Activation Tracker
-      </a>
-
+      <a href="registrationhistory.html">Registration Submits</a>
+      <a href="requirementhistory.html">Requirement Submits</a>
+      <a href="giftsubmits.html">Gift Submission</a>
     </div>
+
+  </div>
+
+
+
+  <!-- REPORTS -->
+  <div class="menu-item" id="group-reports">
+
+    <button onclick="toggleAccordion('group-reports')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg">
+      <div class="flex items-center">
+        <span class="mr-3 text-lg text-indigo-600">📈</span>
+        <span class="font-bold text-sm uppercase text-slate-600">Reports</span>
+      </div>
+      <svg class="w-4 h-4 rotate-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </button>
+
+    <div class="menu-content pl-10 space-y-1 mt-1 hidden">
+      <a href="retailerinsights.html">Retailer Insights</a>
+      <a href="analyticsdashboard.html">Distributor Tracker</a>
+      <a href="retailertracker.html">Retailer Tracker</a>
+      <a href="fostracker.html">FOS Tracker</a>
+      <a href="activationtracker.html">Activation Tracker</a>
+    </div>
+
   </div>
 
 </div>
