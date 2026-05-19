@@ -162,3 +162,31 @@ function setActiveMenu() {
 document.addEventListener("DOMContentLoaded", () => {
   setActiveMenu();
 });
+async function loadPage(page) {
+  const res = await fetch("pages/" + page + ".html");
+  const html = await res.text();
+
+  document.getElementById("page-content").innerHTML = html;
+  setActiveMenu();
+
+  history.pushState({ page }, "", "?p=" + page);
+}
+
+function navigate(event, page) {
+  event.preventDefault();
+  loadPage(page);
+}
+
+// load page on first open
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get("p") || "dashboard";
+
+  loadPage(page);
+});
+
+// back button support
+window.addEventListener("popstate", (e) => {
+  const page = e.state?.page || "dashboard";
+  loadPage(page);
+});
