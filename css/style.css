@@ -18,10 +18,12 @@ body {
   color: var(--text-main);
 }
 
+/* prevent scroll when mobile sidebar open */
 body.menu-open {
   overflow: hidden;
 }
 
+/* TOPBAR */
 .topbar {
   height: var(--topbar-height);
   background: rgba(255,255,255,0.9);
@@ -37,15 +39,17 @@ body.menu-open {
   box-sizing: border-box;
 }
 
+/* LAYOUT */
 .layout {
   display: flex;
   align-items: flex-start;
   min-height: calc(100vh - var(--topbar-height));
 }
 
+/* SIDEBAR */
 .sidebar {
   width: var(--sidebar-width);
-  background: #ffffff;
+  background: #fff;
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -57,6 +61,7 @@ body.menu-open {
   z-index: 100;
 }
 
+/* CONTENT */
 .content {
   flex: 1;
   padding: 32px;
@@ -64,6 +69,7 @@ body.menu-open {
   box-sizing: border-box;
 }
 
+/* CARDS */
 .dash-card {
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
 }
@@ -75,14 +81,42 @@ body.menu-open {
     0 10px 10px -5px rgba(79,70,229,0.04);
 }
 
+/* ACCORDION */
 .menu-content.hidden {
   display: none;
 }
 
 .rotate-180 {
   transform: rotate(180deg);
+  transition: 0.2s ease;
 }
 
+/* SIDEBAR LINKS (IMPORTANT FIX) */
+.sidebar a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #475569;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.sidebar a:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* ACTIVE LINK */
+.menu-active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+  font-weight: 600;
+}
+
+/* OVERLAY */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
@@ -90,6 +124,7 @@ body.menu-open {
   opacity: 0;
   visibility: hidden;
   transition: all 0.4s ease;
+  background: rgba(0,0,0,0.25);
 }
 
 .sidebar-overlay.show {
@@ -97,6 +132,7 @@ body.menu-open {
   visibility: visible;
 }
 
+/* MOBILE SIDEBAR */
 @media (max-width: 1024px) {
 
   .layout {
@@ -134,13 +170,4 @@ body.menu-open {
     background: #e2e8f0;
     border-radius: 10px;
   }
-
-}
-.menu-active {
-  background: #eef2ff;
-  color: #4f46e5;
-  border-left: 4px solid #4f46e5;
-  padding-left: 12px;
-  border-radius: 8px;
-  font-weight: 600;
 }
