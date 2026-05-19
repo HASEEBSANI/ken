@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retailer Insights | Smart Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+<style>
+    :root { 
+        --primary: #4f46e5; 
+        --bg-body: #f8fafc;
+        --sidebar-width: 280px; 
+        --topbar-height: 70px; 
+        --border-color: #e2e8f0;
+    }
+
+    body { 
+        margin: 0; 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        background: var(--bg-body); 
+        color: #1e293b;
+    }
+
+    /* Prevent background scroll when bottom sheet is open */
+    body.menu-open {
+        overflow: hidden;
+    }
+
+    /* Standardized Topbar */
+    .topbar {
+        height: var(--topbar-height); 
+        background: rgba(255, 255, 255, 0.9); 
+        backdrop-filter: blur(10px);
+        display: flex; 
+        align-items: center; 
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 101;
+        justify-content: space-between;
+    }
+
+    .layout {
+        display: flex; 
+        align-items: flex-start; 
+        min-height: calc(100vh - var(--topbar-height)); 
+    }
+
+    /* Standardized Sidebar (Desktop) */
+    .sidebar {
+        width: var(--sidebar-width);
+        background: #ffffff;
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        padding: 24px 16px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: sticky;
+        top: var(--topbar-height);
+        height: calc(100vh - var(--topbar-height));
+        overflow-y: auto;
+    }
+
+    .content { flex: 1; padding: 32px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+    /* Menu States */
+    .menu-content.hidden { display: none; }
+    .rotate-180 { transform: rotate(180deg); }
+
+    /* Loader Animation */
+    .loader { border-top-color: #4f46e5; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* ============================================================
+       MOBILE TRANSFORMATION (Bottom Sheet Style)
+       ============================================================ */
+    @media (max-width: 1024px) {
+        .layout {
+            display: block;
+            height: auto;
+        }
+
+        /* Sidebar transforms into Bottom Sheet */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            bottom: -100%; /* Hidden off-screen bottom */
+            top: auto;
+            width: 100%;
+            height: 75vh;
+            z-index: 2000;
+            border-right: none;
+            border-top: 1px solid var(--border-color);
+            border-radius: 32px 32px 0 0;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            padding: 40px 20px 60px 20px;
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar.show {
+            bottom: 0; /* Slide up to show */
+        }
+
+        /* Visual Handle for Bottom Sheet */
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 45px;
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .content { padding: 20px 16px; }
+    }
+
+    /* Sidebar Overlay (Catch clicks to close) */
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: transparent;
+        z-index: 1500;
+        display: none;
+    }
+    .sidebar-overlay.show { 
+        display: block; 
+    }
+/* ===== Mobile Table Transformation ===== */
+@media (max-width: 640px) {
+    .overflow-x-auto { overflow: visible; }
+    
+    #retailerHead { display: none; } /* Hide headers */
+    
+    #retailerBody { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 1rem; 
+    }
+
+    #retailerBody tr {
+        display: block;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    #retailerBody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0 !important;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: right;
+    }
+
+    #retailerBody td:last-child { border-bottom: none; }
+
+    /* Retailer Name Header */
+    #retailerBody td:first-child {
+        flex-direction: column;
+        align-items: flex-start;
+        border-bottom: 2px solid var(--primary-light);
+        margin-bottom: 8px;
+        padding-bottom: 12px !important;
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    /* Use data-label for mobile headers */
+    #retailerBody td:not(:first-child)::before {
+        content: attr(data-label);
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-right: 12px;
+    }
+}
+
+</style>
+
+</head>
+<body onload="loadRetailerList()">
+
+    <header class="topbar">
+    <div class="flex items-center gap-3">
+        <span class="text-2xl cursor-pointer lg:hidden" onclick="toggleSidebar()">☰</span>
+
+        <div class="flex items-center gap-3">
+            <div class="hidden lg:flex w-10 h-10 bg-indigo-600 rounded-xl items-center justify-center text-white shadow-lg shadow-indigo-200 font-bold text-xl">
+                RI
+            </div>
+            
+            <span class="font-extrabold text-slate-800 text-lg md:text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
+Retailer Insights</span>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-full border border-slate-100">
+        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+        <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest hidden sm:inline">Live Sync</span>
+    </div>
+</header>
+
+    <div class="layout">
+  <div id="sidebar" class="sidebar space-y-2">
+    <div class="menu-item" id="group-forms">
+      <button onclick="toggleAccordion('group-forms')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
+        <div class="flex items-center">
+          <span class="mr-3 text-lg text-indigo-600">📝</span>
+          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">Forms & Data</span>
+        </div>
+        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </button>
+      <div class="menu-content pl-10 space-y-1 mt-1 hidden">
+        <a href="registration.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Registration Forum</a>
+        <a href="requirement.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Requirements Forum</a>
+        <a href="gifttracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Onam Gift Forum </a>
+        <a href="https://retaileronboarding.axio.co.in/" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">XEF Onboarding Forum</a>
+        <a href="https://miservicemanager.mi.com/public/#/create-appointment" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">xiaomi Service Forum</a>
+      </div>
+    </div>
+
+    <div class="menu-item" id="group-logs">
+      <button onclick="toggleAccordion('group-logs')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
+        <div class="flex items-center">
+          <span class="mr-3 text-lg text-indigo-600">🕒</span>
+          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">Logs</span>
+        </div>
+        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </button>
+      <div class="menu-content pl-10 space-y-1 mt-1 hidden">
+        <a href="registrationhistory.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Registration Submits</a>
+        <a href="requirementhistory.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Requirement Submits</a>
+        <a href="giftsubmits.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Gift Submission</a>
+      </div>
+    </div>
+
+    <div class="menu-item" id="group-reports">
+      <button onclick="toggleAccordion('group-reports')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
+        <div class="flex items-center">
+          <span class="mr-3 text-lg text-indigo-600">📈</span>
+          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">Reports</span>
+        </div>
+        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </button>
+      <div class="menu-content pl-10 space-y-1 mt-1 hidden">
+        <a href="retailerinsights.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Retailer Insights</a>
+        <a href="analyticsdashboard.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Distributor Tracker</a>
+        <a href="retailertracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Retailer Tracker</a>
+        <a href="fostracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">FOS Tracker</a>
+        <a href="activationtracker.html" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Activation Tracker</a>
+      </div>
+    </div>
+ <div class="menu-item">
+      <a href="index.html" class="w-full flex items-center p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
+        <span class="mr-3 text-lg text-indigo-600">🏠</span>
+        <span class="font-bold text-sm uppercase tracking-wide text-slate-600">Dashboard</span>
+      </a>
+    </div>
+  </div>
+
+    <div class="menu-item" id="group-uploads">
+      <button onclick="toggleAccordion('group-uploads')" class="w-full flex items-center justify-between p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
+        <div class="flex items-center">
+          <span class="mr-3 text-lg text-indigo-600">☁️</span>
+          <span class="font-bold text-sm uppercase tracking-wide text-slate-600">Uploads</span>
+        </div>
+        <svg class="w-4 h-4 rotate-icon text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </button>
+      <div class="menu-content pl-10 space-y-1 mt-1 hidden">
+        <a href="<?= getScriptURL(); ?>?p=upload" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Upload IMEI</a>
+        <a href="<?= getScriptURL(); ?>?p=fosmapping" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">FOS Mapping</a>
+        <a href="<?= getScriptURL(); ?>?p=uploadprice" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Upload Price</a>
+        <a href="<?= getScriptURL(); ?>?p=retailerupload" class="block p-2 text-sm text-gray-600 hover:text-indigo-700 border-l-2 border-transparent hover:border-indigo-600">Retailer Upload</a>
+      </div>
+    </div>
+    <div class="menu-item">
+      <a href="index.html" class="w-full flex items-center p-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all group">
+        <span class="mr-3 text-lg text-indigo-600">🏠</span>
+        <span class="font-bold text-sm uppercase tracking-wide text-slate-600">Dashboard</span>
+      </a>
+    </div>
+  </div>
+
+        <main class="content">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+                <div class="space-y-1">
+                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Performance Summary</h1>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <p class="text-slate-500 font-semibold text-sm">Real-time activation analytics</p>
+                    </div>
+                </div>
+
+               <div class="flex flex-row items-center gap-2 w-full lg:w-auto">
+    <div class="relative flex-1 lg:w-72">
+        <select id="retailerSelect" onchange="fetchRetailerStats()" 
+            class="w-full pl-4 pr-10 py-3 rounded-2xl border-2 border-slate-200 bg-white shadow-sm hover:border-indigo-400 focus:ring-4 focus:ring-indigo-100 outline-none font-bold text-slate-700 transition-all appearance-none text-sm md:text-base">
+            <option value="">All Retailers</option>
+        </select>
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+    </div>
+    
+    <button onclick="fetchRetailerStats()" class="p-3 bg-white border-2 border-slate-200 rounded-2xl hover:bg-slate-50 text-slate-600 transition-all active:scale-95 shrink-0">
+        <svg id="refreshIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+    </button>
+</div>
+            </div>
+
+           <div id="statsGrid" class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-6 mb-10 transition-all duration-500">
+    
+    <div class="bg-white p-4 md:p-6 rounded-[20px] md:rounded-[24px] border border-slate-200 shadow-sm relative group">
+        <p class="text-[9px] md:text-[11px] font-black text-orange-500 uppercase tracking-widest mb-1">Yesterday</p>
+        <div class="text-2xl md:text-4xl font-extrabold text-slate-800 tracking-tight" id="statYesterday">0</div>
+        <p class="text-[10px] font-bold text-slate-400 mt-1 md:mt-2">Closed Units</p>
+    </div>
+
+    <div class="bg-white p-4 md:p-6 rounded-[20px] md:rounded-[24px] border border-slate-200 shadow-sm relative group">
+        <p class="text-[9px] md:text-[11px] font-black text-indigo-600 uppercase tracking-widest mb-1">Rolling Week</p>
+        <div class="text-2xl md:text-4xl font-extrabold text-slate-800 tracking-tight" id="statWeek">0</div>
+        <p class="text-[10px] font-bold text-slate-400 mt-1 md:mt-2">Active Perf.</p>
+    </div>
+
+    <div class="bg-white p-4 md:p-6 rounded-[20px] md:rounded-[24px] border border-slate-200 shadow-sm relative group">
+        <p class="text-[9px] md:text-[11px] font-black text-emerald-500 uppercase tracking-widest mb-1">MTD</p>
+        <div class="text-2xl md:text-4xl font-extrabold text-slate-800 tracking-tight" id="statMonth">0</div>
+        <p class="text-[10px] font-bold text-slate-400 mt-1 md:mt-2">Month to date</p>
+    </div>
+
+    <div class="bg-white p-4 md:p-6 rounded-[20px] md:rounded-[24px] border border-slate-200 shadow-sm relative group">
+        <p class="text-[9px] md:text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Prev. Month</p>
+        <div class="text-2xl md:text-4xl font-extrabold text-slate-800 tracking-tight" id="statLastMonth">0</div>
+        <p class="text-[10px] font-bold text-slate-400 mt-1 md:mt-2">Final Count</p>
+    </div>
+</div>
+
+            <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-50">
+                    <h2 class="text-xl font-extrabold text-slate-800 tracking-tight">Retailer Breakdown</h2>
+                </div>
+                <div class="overflow-x-auto p-4">
+                    <table class="w-full text-left">
+                        <thead id="retailerHead"></thead>
+                        <tbody id="retailerBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+  
+    // --- UI LOGIC ---
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('show');
+    }
+
+   function toggleAccordion(id) {
+  // 1. Find the section we want to toggle
+  const targetMenu = document.getElementById(id);
+  const targetContent = targetMenu.querySelector('.menu-content');
+  const targetIcon = targetMenu.querySelector('.rotate-icon');
+  
+  // 2. Check if it's already open
+  const isAlreadyOpen = !targetContent.classList.contains('hidden');
+
+  // 3. Close ALL other sections
+  document.querySelectorAll('.menu-item').forEach(item => {
+    const content = item.querySelector('.menu-content');
+    const icon = item.querySelector('.rotate-icon');
+    
+    if (content) content.classList.add('hidden');
+    if (icon) icon.classList.remove('rotate-180');
+  });
+
+  // 4. If the clicked one wasn't open, open it now
+  if (!isAlreadyOpen) {
+    targetContent.classList.remove('hidden');
+    targetIcon.classList.add('rotate-180');
+  }
+}
+
+   // --- DATA FETCHING ---
+function loadRetailerList() {
+    const select = document.getElementById('retailerSelect');
+    select.innerHTML = '<option value="">Loading Retailers...</option>';
+
+    google.script.run
+        .withSuccessHandler(list => {
+            if (!list || list.length === 0) {
+                select.innerHTML = '<option value="">No Retailers Found</option>';
+                return;
+            }
+
+            // Filter out errors and sort by the Name part
+            const cleanList = list
+                .filter(item => item && !item.toString().includes("ERROR"))
+                .sort((a, b) => {
+                    const nameA = a.includes(" - ") ? a.split(" - ")[1].trim() : a;
+                    const nameB = b.includes(" - ") ? b.split(" - ")[1].trim() : b;
+                    return nameA.localeCompare(nameB, undefined, { 
+                        numeric: true, 
+                        sensitivity: 'base' 
+                    });
+                });
+
+            let options = '<option value="">All Retailers</option>';
+            cleanList.forEach(item => { 
+                const displayName = item.includes(' - ') ? item.split(' - ')[1] : item;
+                options += `<option value="${item}">${displayName}</option>`; 
+            });
+
+            select.innerHTML = options;
+            fetchRetailerStats(); 
+        })
+        .getUniqueRetailers();
+}
+
+    function fetchRetailerStats() {
+    const name = document.getElementById('retailerSelect').value;
+    const grid = document.getElementById('statsGrid');
+    const refreshIcon = document.getElementById('refreshIcon');
+
+    // Start UI Loading State
+    grid.style.filter = 'blur(4px)';
+    refreshIcon.classList.add('animate-spin');
+
+    google.script.run
+        .withFailureHandler(err => {
+            console.error("Script Error:", err);
+            alert("Sync Failed: " + err.message);
+            grid.style.filter = 'none';
+            refreshIcon.classList.remove('animate-spin');
+        })
+        .withSuccessHandler(data => {
+            try {
+                if (!data) throw new Error("No data received");
+
+                // Update Top Stats Cards
+                document.getElementById('statYesterday').innerText = data.yesterday ?? 0;
+                document.getElementById('statWeek').innerText = data.week ?? 0;
+                document.getElementById('statMonth').innerText = data.month ?? 0;
+                document.getElementById('statLastMonth').innerText = data.lastMonth ?? 0;
+
+                const tableHead = document.getElementById("retailerHead");
+                const tableBody = document.getElementById("retailerBody");
+
+                // Clear previous content strictly
+                tableHead.innerHTML = "";
+                tableBody.innerHTML = "";
+
+                if (data.storeList && Array.isArray(data.storeList) && data.months) {
+                    
+                    // --- 1. PERFECT ORDERLY SORT (A-Z + 1-10) ---
+                    data.storeList.sort((a, b) => {
+                        const nA = String(a.name || "").trim();
+                        const nB = String(b.name || "").trim();
+                        // 'numeric: true' ensures Store 2 comes before Store 10
+                        return nA.localeCompare(nB, undefined, { 
+                            numeric: true, 
+                            sensitivity: 'base' 
+                        });
+                    });
+
+                    // --- 2. Build Header ---
+                    let headerRow = `<tr class="bg-slate-50/50">
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">Retailer Name</th>`;
+                    
+                    data.months.forEach(m => {
+                        headerRow += `<th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">${m.label}</th>`;
+                    });
+                    headerRow += "</tr>";
+                    tableHead.innerHTML = headerRow;
+
+                    // --- 3. Build Body (Fast string concatenation) ---
+                    let bodyContent = "";
+                    data.storeList.forEach(store => {
+                        let row = `<tr class="hover:bg-slate-50/50 transition-all border-b border-slate-50">
+                            <td class="px-8 py-5 font-bold text-slate-800">${store.name}</td>`;
+                        
+                        data.months.forEach(m => {
+                            let count = (store.months && store.months[m.key]) ? store.months[m.key] : 0;
+                            row += `<td class="px-8 py-5 text-center font-bold text-slate-600" data-label="${m.label}">${count}</td>`;
+                        });
+                        row += "</tr>";
+                        bodyContent += row;
+                    });
+                    tableBody.innerHTML = bodyContent;
+                }
+            } catch (e) {
+                console.error("Processing Error:", e);
+            } finally {
+                // Always restore UI regardless of success or internal error
+                grid.style.filter = 'none';
+                refreshIcon.classList.remove('animate-spin');
+            }
+        })
+        .getSpecificRetailerData(name);
+}
+</script>
+</body>
+</html>
