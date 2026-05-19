@@ -500,18 +500,27 @@ window.addEventListener('click', function(e) {
 });
 
   function loadDashboard() {
-    google.script.run.withSuccessHandler(data => {
-      let rows = data.rows || [];
-      
-      // SORTING LOGIC: Newest date first (Z-A)
-      rows.sort((a, b) => parseDate(b.activated) - parseDate(a.activated));
-      
-      masterRows = rows;
-      localStorage.setItem(CACHE_KEY, JSON.stringify(masterRows));
-      populateRetailerDropdown();
-      applyFilters();
-    }).getDashboardData();
-  }
+    getDashboardData()
+.then(data => {
+
+  let rows = data.rows || [];
+
+  rows.sort((a, b) =>
+    parseDate(b.activated) -
+    parseDate(a.activated)
+  );
+
+  masterRows = rows;
+
+  localStorage.setItem(
+    CACHE_KEY,
+    JSON.stringify(masterRows)
+  );
+
+  populateRetailerDropdown();
+  applyFilters();
+
+});
 
   function renderTable() {
     const start = currentPage * pageSize;
@@ -690,6 +699,6 @@ function closeActionsMenu() {
 }
 
 </script>
-
+<script src="api.js"></script>
 </body>
 </html>
