@@ -4,17 +4,13 @@
 <head>
 
   <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Dashboard | Smart Analytics</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
 
@@ -23,32 +19,20 @@
 <body>
 
   <!-- TOPBAR -->
-
   <div class="topbar">
 
     <div class="flex items-center gap-3">
 
-      <span class="text-2xl cursor-pointer lg:hidden"
-            onclick="toggleSidebar()">
-
-        ☰
-
-      </span>
+      <span class="text-2xl cursor-pointer lg:hidden" onclick="toggleSidebar()">☰</span>
 
       <div class="flex items-center gap-3">
 
         <div class="hidden md:flex w-10 h-10 bg-indigo-600 rounded-xl items-center justify-center shadow-lg shadow-indigo-200">
-
-          <span class="text-white font-bold text-sm">
-            DB
-          </span>
-
+          <span class="text-white font-bold text-sm">DB</span>
         </div>
 
         <span class="font-extrabold text-slate-800 text-lg md:text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
-
           Main Dashboard
-
         </span>
 
       </div>
@@ -56,183 +40,54 @@
     </div>
 
     <div id="dateDisplay"
-         class="hidden md:block text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-4 py-2 rounded-full border border-indigo-100">
+      class="hidden md:block text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-4 py-2 rounded-full border border-indigo-100">
     </div>
 
   </div>
 
-
-
   <!-- LAYOUT -->
-
   <div class="layout">
 
-    <!-- SIDEBAR AUTO LOAD -->
-
+    <!-- SIDEBAR LOAD HERE -->
     <div id="sidebar-container"></div>
 
-
-
     <!-- CONTENT -->
-
     <main class="content">
 
       <div class="mb-10">
-
         <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
-
           Welcome Back
-
         </h2>
-
         <p class="text-slate-500 font-medium">
-
           Quick access to your tracking tools and analytics.
-
         </p>
-
       </div>
 
-
-
-      <!-- DASHBOARD CARDS -->
-
+      <!-- CARDS -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-        <a href="analyticsdashboard.html"
-           class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
-
-          <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-
-            📈
-
-          </div>
-
-          <h3 class="text-xl font-bold text-slate-800 mb-2">
-            Distributor Tracker
-          </h3>
-
-          <p class="text-slate-500 text-sm leading-relaxed">
-
-            View retailer targets, achievements, and real-time progress percentages.
-
-          </p>
-
+        <a href="analyticsdashboard.html" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+          📈 Distributor Tracker
         </a>
 
-
-
-        <a href="retailerinsights.html"
-           class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
-
-          <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-
-            💎
-
-          </div>
-
-          <h3 class="text-xl font-bold text-slate-800 mb-2">
-            Retailer Insights
-          </h3>
-
-          <p class="text-slate-500 text-sm leading-relaxed">
-
-            Detailed breakdown of activations and store-level analytics.
-
-          </p>
-
+        <a href="retailerinsights.html" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+          💎 Retailer Insights
         </a>
 
-
-
-        <a href="fostracker.html"
-           class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
-
-          <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-orange-600 group-hover:text-white transition-colors">
-
-            📍
-
-          </div>
-
-          <h3 class="text-xl font-bold text-slate-800 mb-2">
-            FOS Tracker
-          </h3>
-
-          <p class="text-slate-500 text-sm leading-relaxed">
-
-            Track field officer activities and registration submissions.
-
-          </p>
-
+        <a href="fostracker.html" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+          📍 FOS Tracker
         </a>
 
-
-
-        <a href="upload.html"
-           class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
-
-          <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-
-            ☁️
-
-          </div>
-
-          <h3 class="text-xl font-bold text-slate-800 mb-2">
-            Upload Data
-          </h3>
-
-          <p class="text-slate-500 text-sm leading-relaxed">
-
-            Bulk upload IMEI data or update pricing lists to the database.
-
-          </p>
-
+        <a href="upload.html" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+          ☁️ Upload Data
         </a>
 
-
-
-        <a href="retailertracker.html"
-           class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
-
-          <div class="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-rose-600 group-hover:text-white transition-colors">
-
-            🏪
-
-          </div>
-
-          <h3 class="text-xl font-bold text-slate-800 mb-2">
-            Retailer Tracker
-          </h3>
-
-          <p class="text-slate-500 text-sm leading-relaxed">
-
-            Monitor individual retailer performance and registration status.
-
-          </p>
-
+        <a href="retailertracker.html" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+          🏪 Retailer Tracker
         </a>
 
-
-
-        <a href="activationtracker.html"
-           class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
-
-          <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl mb-6 group-hover:bg-amber-600 group-hover:text-white transition-colors">
-
-            📑
-
-          </div>
-
-          <h3 class="text-xl font-bold text-slate-800 mb-2">
-            Activation Tracker
-          </h3>
-
-          <p class="text-slate-500 text-sm leading-relaxed">
-
-            Review history of activated devices and submission logs.
-
-          </p>
-
+        <a href="activationtracker.html" class="dash-card bg-white p-8 rounded-[32px] border border-slate-200 block group">
+          📑 Activation Tracker
         </a>
 
       </div>
@@ -241,19 +96,29 @@
 
   </div>
 
-
-
   <!-- OVERLAY -->
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-  <div id="sidebarOverlay"
-       class="sidebar-overlay"
-       onclick="closeSidebar()">
-  </div>
+  <!-- JS (ONLY ONE FILE) -->
+  <script src="ken/js/script.js"></script>
 
+  <!-- LOAD SIDEBAR DYNAMICALLY -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const res = await fetch("sidebar.html");
+      const html = await res.text();
+      document.getElementById("sidebar-container").innerHTML = html;
 
+      // date
+      const now = new Date();
+      document.getElementById('dateDisplay').innerText =
+        now.toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+    });
+  </script>
 
-  <!-- JS -->
-<script src="ken/js/script.js"></script>
 </body>
-
 </html>
