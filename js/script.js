@@ -143,3 +143,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
+function setActiveMenu() {
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get("p") || "dashboard";
+
+  document.querySelectorAll(".sidebar-link").forEach(link => {
+    const target = link.getAttribute("data-page");
+
+    if (target === page) {
+      link.classList.add("menu-active");
+    } else {
+      link.classList.remove("menu-active");
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setActiveMenu();
+});
