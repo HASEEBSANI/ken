@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -13,17 +12,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
-
 </head>
 
 <body>
 
   <!-- TOPBAR -->
   <div class="topbar">
-
     <div class="flex items-center gap-3">
 
-      <span class="text-2xl cursor-pointer lg:hidden" onclick="toggleSidebar()">☰</span>
+      <span class="text-2xl cursor-pointer lg:hidden" onclick="toggleSidebar()">
+        ☰
+      </span>
 
       <div class="flex items-center gap-3">
 
@@ -42,7 +41,6 @@
     <div id="dateDisplay"
       class="hidden md:block text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-4 py-2 rounded-full border border-indigo-100">
     </div>
-
   </div>
 
   <!-- LAYOUT -->
@@ -52,7 +50,7 @@
     <div id="sidebar-container"></div>
 
     <!-- CONTENT -->
-    <div id="page-content"></div>
+    <main class="content">
 
       <div class="mb-10">
         <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -93,23 +91,24 @@
       </div>
 
     </main>
-
   </div>
 
   <!-- OVERLAY -->
   <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-  <!-- JS (ONLY ONE FILE) -->
+  <!-- MAIN JS -->
   <script src="ken/js/script.js"></script>
 
-  <!-- LOAD SIDEBAR DYNAMICALLY -->
+  <!-- LOAD SIDEBAR + DATE -->
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+
+      // Load sidebar.html dynamically
       const res = await fetch("sidebar.html");
       const html = await res.text();
       document.getElementById("sidebar-container").innerHTML = html;
 
-      // date
+      // set date
       const now = new Date();
       document.getElementById('dateDisplay').innerText =
         now.toLocaleDateString('en-GB', {
@@ -117,6 +116,7 @@
           month: 'long',
           year: 'numeric'
         });
+
     });
   </script>
 
